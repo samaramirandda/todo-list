@@ -11,11 +11,36 @@
 
 <body>
     <div class="container">
-        <h1>Task List</h1>
+        <h1>📝 Task List</h1>
+        
+        <!-- Campo de busca -->
+        <div class="search-container">
+            <input type="text" id="busca" placeholder="🔍 Buscar tarefas..." oninput="searchTasks()">
+        </div>
+
+        <!-- Formulário para adicionar tarefas -->
         <div class="form">
             <input type="text" id="tarefa" placeholder="Add a new task">
+            
+            <select id="categoria">
+                <option value="pessoal">👤 Pessoal</option>
+                <option value="trabalho">💼 Trabalho</option>
+                <option value="estudos">📚 Estudos</option>
+                <option value="casa">🏠 Casa</option>
+            </select>
+            
+            <select id="prioridade">
+                <option value="baixa">🟢 Baixa</option>
+                <option value="media">🟡 Média</option>
+                <option value="alta">🔴 Alta</option>
+            </select>
+            
+            <input type="date" id="data-vencimento">
+            
             <button onClick="addTask()">Add</button>
         </div>
+
+        <!-- Lista de tarefas -->
         <ul id="lista-tarefas">
         </ul>
     </div>
