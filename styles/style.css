@@ -26,6 +26,47 @@ body {
     font-size: 14px;
 }
 
+.filters-container{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+    align-items: center;
+    justify-content: center;
+}
+
+.filter-btn{
+    padding: 8px 16px;
+    border: 2px solid #4b2163;
+    background-color: transparent;
+    color: #4b2163;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.filter-btn:hover{
+    background-color: #4b2163;
+    color: white;
+}
+
+.filter-btn.active{
+    background-color: #4b2163;
+    color: white;
+    font-weight: bold;
+}
+
+#filtro-categoria{
+    padding: 8px 12px;
+    border: 2px solid #4b2163;
+    border-radius: 6px;
+    font-size: 14px;
+    background-color: white;
+    cursor: pointer;
+}
+
+
 .form {
     display: flex;
     flex-wrap: wrap;

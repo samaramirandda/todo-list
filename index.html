@@ -18,6 +18,21 @@
             <input type="text" id="busca" placeholder="🔍 Buscar tarefas..." oninput="searchTasks()">
         </div>
 
+        <!-- Filtros -->
+        <div class="filters-container">
+            <button class="filter-btn active" onclick="filterTasks('todas')">📋 Todas</button>
+            <button class="filter-btn" onclick="filterTasks('pendentes')">⏳ Pendentes</button>
+            <button class="filter-btn" onclick="filterTasks('concluidas')">✅ Concluídas</button>
+            
+            <select id="filtro-categoria" onchange="filterByCategory()">
+                <option value="todas">🏷️ Todas Categorias</option>
+                <option value="pessoal">👤 Pessoal</option>
+                <option value="trabalho">💼 Trabalho</option>
+                <option value="estudos">📚 Estudos</option>
+                <option value="casa">🏠 Casa</option>
+            </select>
+        </div>
+        
         <!-- Formulário para adicionar tarefas -->
         <div class="form">
             <input type="text" id="tarefa" placeholder="Add a new task">

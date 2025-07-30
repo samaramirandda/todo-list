@@ -31,7 +31,7 @@ task-list-website
    ```
    cd task-list-website
    ```
-3. **Open `index.html` in your web browser** to view the application.
+3. **Open `https://samaramirandda.github.io/todo-list/` in your web browser** to view the application.
 
 ## Usage
 - Type a task in the input field and click the "Adicionar" button to add it to the list.
