@@ -1,283 +1,485 @@
+/* ==================== VARIÁVEIS CSS PARA TEMAS ==================== */
+/* Variáveis para tema claro (padrão) */
+:root {
+    --bg-primary: #f4f4f4; /* Fundo principal da página */
+    --bg-secondary: white; /* Fundo do container */
+    --bg-tertiary: #f9f9f9; /* Fundo dos itens de tarefa */
+    --text-primary: #333; /* Cor principal do texto */
+    --text-secondary: #666; /* Cor secundária do texto */
+    --text-muted: #888; /* Cor do texto desbotado */
+    --border-color: #ddd; /* Cor das bordas */
+    --border-light: #ccc; /* Cor das bordas mais claras */
+    --shadow: rgba(0, 0, 0, 0.1); /* Cor das sombras */
+    --accent-color: #4b2163; /* Cor de destaque (roxo) */
+    --accent-hover: #5d2874; /* Cor de destaque no hover */
+}
+
+/* Variáveis para tema escuro */
+[data-theme="dark"] {
+    --bg-primary: #1a1a1a; /* Fundo principal escuro */
+    --bg-secondary: #2d2d2d; /* Fundo do container escuro */
+    --bg-tertiary: #3a3a3a; /* Fundo dos itens de tarefa escuro */
+    --text-primary: #e0e0e0; /* Texto principal claro */
+    --text-secondary: #b0b0b0; /* Texto secundário claro */
+    --text-muted: #888; /* Texto desbotado (mesmo valor) */
+    --border-color: #444; /* Bordas escuras */
+    --border-light: #555; /* Bordas mais claras no escuro */
+    --shadow: rgba(0, 0, 0, 0.3); /* Sombras mais intensas */
+    --accent-color: #6d4aff; /* Roxo mais claro para contraste */
+    --accent-hover: #7d5aff; /* Roxo mais claro no hover */
+}
+
+/* ==================== ESTILOS GLOBAIS DA PÁGINA ==================== */
 body {
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: #f4f4f4;
-    padding: 40px;
-    text-align: center;
+    font-family: Arial, Helvetica, sans-serif; /* Define fonte padrão para toda a página */
+    background-color: var(--bg-primary); /* Usa variável CSS para fundo (adapta ao tema) */
+    color: var(--text-primary); /* Usa variável CSS para cor do texto */
+    padding: 40px; /* Espaçamento interno de 40px em todos os lados */
+    text-align: center; /* Centraliza todo o texto da página */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Transição suave entre temas */
 }
 
+/* ==================== CONTAINER PRINCIPAL ==================== */
 .container {
-    background-color: white;
-    max-width: 600px;
-    margin: auto;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background-color: var(--bg-secondary); /* Fundo usando variável CSS */
+    max-width: 600px; /* Largura máxima de 600px (não cresce mais que isso) */
+    margin: auto; /* Centraliza horizontalmente o container na página */
+    padding: 20px; /* Espaçamento interno de 20px em todos os lados */
+    border-radius: 12px; /* Bordas arredondadas com raio de 12px */
+    box-shadow: 0 4px 12px var(--shadow); /* Sombra usando variável CSS */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Transição suave */
 }
 
+/* ==================== CABEÇALHO COM BOTÃO DE TEMA ==================== */
+/* Container do cabeçalho (título + botão tema) */
+.header {
+    display: flex; /* Layout flexível - elementos lado a lado */
+    justify-content: space-between; /* Título à esquerda, botão à direita */
+    align-items: center; /* Alinha verticalmente no centro */
+    margin-bottom: 20px; /* Espaçamento abaixo do cabeçalho */
+}
+
+/* Título principal */
+.header h1 {
+    margin: 0; /* Remove margin padrão do h1 */
+    color: var(--text-primary); /* Cor do texto usando variável */
+}
+
+/* Botão de alternância de tema */
+.theme-toggle {
+    padding: 8px 16px; /* Espaçamento interno: 8px vertical, 16px horizontal */
+    border: 2px solid var(--accent-color); /* Borda usando cor de destaque */
+    background-color: transparent; /* Fundo transparente */
+    color: var(--accent-color); /* Cor do texto usando cor de destaque */
+    border-radius: 20px; /* Bordas bem arredondadas (formato pill) */
+    cursor: pointer; /* Cursor vira "mãozinha" ao passar por cima */
+    font-size: 14px; /* Tamanho da fonte de 14px */
+    transition: all 0.3s ease; /* Transição suave para todas as propriedades */
+    font-weight: 500; /* Peso da fonte médio */
+}
+
+/* Efeito hover no botão de tema */
+.theme-toggle:hover {
+    background-color: var(--accent-color); /* Fundo fica da cor de destaque */
+    color: var(--bg-secondary); /* Texto fica da cor do fundo secundário */
+    transform: scale(1.05); /* Aumenta levemente o tamanho (105%) */
+}
+
+/* ==================== CAMPO DE BUSCA ==================== */
 .search-container {
-    margin-bottom: 20px;
+    margin-bottom: 20px; /* Espaçamento de 20px abaixo do campo de busca */
 }
 
 .search-container input {
-    padding: 10px;
-    width: 80%;
-    border-radius: 6px;
-    border: 1px solid #ddd;
-    font-size: 14px;
+    padding: 10px; /* Espaçamento interno de 10px dentro do campo */
+    width: 80%; /* Largura de 80% do container pai */
+    border-radius: 6px; /* Bordas arredondadas com raio de 6px */
+    border: 1px solid var(--border-color); /* Borda usando variável CSS */
+    font-size: 14px; /* Tamanho da fonte de 14px */
+    background-color: var(--bg-secondary); /* Fundo usando variável CSS */
+    color: var(--text-primary); /* Cor do texto usando variável CSS */
+    transition: all 0.3s ease; /* Transição suave */
 }
 
-/* Estilos para o filtro de tarefas */
+/* Foco no campo de busca */
+.search-container input:focus {
+    outline: none; /* Remove outline padrão */
+    border-color: var(--accent-color); /* Borda fica da cor de destaque */
+    box-shadow: 0 0 0 2px rgba(107, 33, 168, 0.2); /* Sombra colorida ao focar */
+}
+
+/* ==================== FILTROS DE TAREFAS ==================== */
+/* Container que agrupa todos os botões e dropdown de filtros */
 .filters-container{
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 20px;
-    align-items: center;
-    justify-content: center;
+    display: flex; /* Layout flexível - elementos ficam em linha */
+    flex-wrap: wrap; /* Permite quebra de linha se não couber */
+    gap: 10px; /* Espaçamento de 10px entre cada elemento */
+    margin-bottom: 20px; /* Espaçamento de 20px abaixo dos filtros */
+    align-items: center; /* Alinha elementos verticalmente no centro */
+    justify-content: center; /* Centraliza elementos horizontalmente */
 }
 
+/* Botões de filtro (Todas, Pendentes, Concluídas) */
 .filter-btn{
-    padding: 8px 16px;
-    border: 2px solid #4b2163;
-    background-color: transparent;
-    color: #4b2163;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: all 0.3s ease;
+    padding: 8px 16px; /* Espaçamento interno: 8px vertical, 16px horizontal */
+    border: 2px solid var(--accent-color); /* Borda usando cor de destaque */
+    background-color: transparent; /* Fundo transparente inicialmente */
+    color: var(--accent-color); /* Cor do texto usando cor de destaque */
+    border-radius: 20px; /* Bordas bem arredondadas (formato pill) */
+    cursor: pointer; /* Cursor vira "mãozinha" ao passar por cima */
+    font-size: 14px; /* Tamanho da fonte de 14px */
+    transition: all 0.3s ease; /* Transição suave de 0.3s para todas as propriedades */
 }
 
+/* Efeito hover nos botões de filtro */
 .filter-btn:hover{
-    background-color: #4b2163;
-    color: white;
+    background-color: var(--accent-color); /* Fundo fica da cor de destaque */
+    color: var(--bg-secondary); /* Texto fica da cor do fundo secundário */
 }
 
+/* Botão de filtro ativo (selecionado) */
 .filter-btn.active{
-    background-color: #4b2163;
-    color: white;
-    font-weight: bold;
+    background-color: var(--accent-color); /* Fundo da cor de destaque permanente */
+    color: var(--bg-secondary); /* Texto da cor do fundo secundário permanente */
+    font-weight: bold; /* Texto em negrito para destacar */
 }
 
+/* Dropdown de filtro por categoria */
 #filtro-categoria{
-    padding: 8px 12px;
-    border: 2px solid #4b2163;
-    border-radius: 6px;
-    font-size: 14px;
-    background-color: white;
-    cursor: pointer;
+    padding: 8px 12px; /* Espaçamento interno: 8px vertical, 12px horizontal */
+    border: 2px solid var(--accent-color); /* Borda usando cor de destaque */
+    border-radius: 6px; /* Bordas arredondadas com raio de 6px */
+    font-size: 14px; /* Tamanho da fonte de 14px */
+    background-color: var(--bg-secondary); /* Fundo usando variável CSS */
+    color: var(--text-primary); /* Cor do texto usando variável CSS */
+    cursor: pointer; /* Cursor vira "mãozinha" ao passar por cima */
+    transition: all 0.3s ease; /* Transição suave */
 }
 
-/* Estilos para o contador de tarefas */
+/* ==================== CONTADOR DE TAREFAS ==================== */
+/* Container principal do contador (Total, Pendentes, Concluídas) */
 .task-counter{
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 20px;
-    padding: 15px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex; /* Layout flexível - elementos ficam em linha */
+    justify-content: space-around; /* Distribui elementos com espaçamento igual entre eles */
+    margin-bottom: 20px; /* Espaçamento de 20px abaixo do contador */
+    padding: 15px; /* Espaçamento interno de 15px em todos os lados */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Gradiente diagonal: azul para roxo */
+    border-radius: 10px; /* Bordas arredondadas com raio de 10px */
+    box-shadow: 0 2px 8px var(--shadow); /* Sombra usando variável CSS */
+    transition: box-shadow 0.3s ease; /* Transição suave para sombra */
 }
 
+/* Tema escuro - gradiente diferente para o contador */
+[data-theme="dark"] .task-counter {
+    background: linear-gradient(135deg, #4a5bb2 0%, #5d4a8a 100%); /* Gradiente mais escuro */
+}
+
+/* Cada item individual do contador (Total, Pendentes, ou Concluídas) */
 .counter-item{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
+    display: flex; /* Layout flexível */
+    flex-direction: column; /* Elementos empilhados verticalmente (número em cima, label embaixo) */
+    align-items: center; /* Centraliza elementos horizontalmente */
+    gap: 5px; /* Espaçamento de 5px entre número e label */
 }
 
+/* Números do contador (0, 1, 2, etc.) */
 .counter-number{
-    font-size: 24px;
-    font-weight: bold;
-    color: white;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    font-size: 24px; /* Tamanho da fonte grande (24px) para destaque */
+    font-weight: bold; /* Texto em negrito */
+    color: white; /* Cor branca para contrastar com fundo do gradiente */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); /* Sombra no texto: 1px vertical, 2px blur, preto 20% opacidade */
 }
 
+/* Labels do contador ("Total", "Pendentes", "Concluídas") */
 .counter-label{
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.8);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    font-size: 12px; /* Fonte pequena (12px) */
+    color: rgba(255, 255, 255, 0.8); /* Branco com 80% opacidade (levemente transparente) */
+    text-transform: uppercase; /* Transforma texto para maiúsculas */
+    letter-spacing: 0.5px; /* Espaçamento de 0.5px entre letras para melhor legibilidade */
 }
 
+/* ==================== ANIMAÇÃO DO CONTADOR ==================== */
+/* Classe aplicada temporariamente quando contador é atualizado */
+.counter-updated {
+    animation: counterPulse 0.5s ease-in-out; /* Aplica animação "counterPulse" por 0.5s com transição suave */
+}
+
+/* Definição da animação de "pulso" do contador */
+@keyframes counterPulse {
+    0% { /* Estado inicial (início da animação) */
+        transform: scale(1); /* Tamanho normal (100%) */
+    }
+    50% { /* Meio da animação */
+        transform: scale(1.2); /* Aumenta para 120% do tamanho */
+        color: #cc8bf7; /* Muda cor para lilás */
+        text-shadow: 0 0 10px rgba(250, 230, 255, 0.5); /* Adiciona brilho lilás */
+    }
+    100% { /* Final da animação */
+        transform: scale(1); /* Volta ao tamanho normal */
+        /* Cor e sombra voltam ao padrão automaticamente */
+    }
+}
+
+/* ==================== FORMULÁRIO DE ADICIONAR TAREFA ==================== */
 .form {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 20px;
-    align-items: center;
-    justify-content: center;
+    display: flex; /* Layout flexível - elementos ficam em linha */
+    flex-wrap: wrap; /* Permite quebra de linha se não couber */
+    gap: 10px; /* Espaçamento de 10px entre cada elemento */
+    margin-bottom: 20px; /* Espaçamento de 20px abaixo do formulário */
+    align-items: center; /* Alinha elementos verticalmente no centro */
+    justify-content: center; /* Centraliza elementos horizontalmente */
 }
 
+/* ==================== CAMPOS DE INPUT E SELECT ==================== */
+/* Estilos para campos de texto, dropdowns e campo de data */
 input[type="text"], select, input[type="date"] {
-    padding: 10px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    font-size: 14px;
+    padding: 10px; /* Espaçamento interno de 10px */
+    border-radius: 6px; /* Bordas arredondadas com raio de 6px */
+    border: 1px solid var(--border-light); /* Borda usando variável CSS */
+    font-size: 14px; /* Tamanho da fonte de 14px */
+    background-color: var(--bg-secondary); /* Fundo usando variável CSS */
+    color: var(--text-primary); /* Cor do texto usando variável CSS */
+    transition: all 0.3s ease; /* Transição suave */
 }
 
+/* Foco nos campos de input */
+input[type="text"]:focus, select:focus, input[type="date"]:focus {
+    outline: none; /* Remove outline padrão */
+    border-color: var(--accent-color); /* Borda fica da cor de destaque */
+    box-shadow: 0 0 0 2px rgba(107, 33, 168, 0.2); /* Sombra colorida ao focar */
+}
+
+/* Campo de texto da tarefa (ocupa mais espaço) */
 input[type="text"] {
-    flex: 2;
-    min-width: 200px;
+    flex: 2; /* Ocupa 2 partes do espaço disponível (maior que outros) */
+    min-width: 200px; /* Largura mínima de 200px */
 }
 
+/* Dropdowns (categoria e prioridade) */
 select {
-    flex: 1;
-    min-width: 120px;
+    flex: 1; /* Ocupa 1 parte do espaço disponível */
+    min-width: 120px; /* Largura mínima de 120px */
 }
 
+/* Campo de data */
 input[type="date"] {
-    flex: 1;
+    flex: 1; /* Ocupa 1 parte do espaço disponível */
 }
 
+/* ==================== BOTÕES ==================== */
 button {
-    padding: 10px 20px;
-    border: none;
-    background-color: #4b2163;
-    color: white;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 14px;
+    padding: 10px 20px; /* Espaçamento interno: 10px vertical, 20px horizontal */
+    border: none; /* Remove borda padrão */
+    background-color: var(--accent-color); /* Fundo usando cor de destaque */
+    color: var(--bg-secondary); /* Texto usando cor do fundo secundário */
+    border-radius: 6px; /* Bordas arredondadas com raio de 6px */
+    cursor: pointer; /* Cursor vira "mãozinha" ao passar por cima */
+    font-size: 14px; /* Tamanho da fonte de 14px */
+    transition: all 0.3s ease; /* Transição suave */
 }
 
+/* Efeito hover nos botões */
 button:hover {
-    background-color: #5d2874;
+    background-color: var(--accent-hover); /* Cor de destaque no hover */
+    transform: translateY(-1px); /* Move levemente para cima */
 }
 
+/* ==================== LISTA DE TAREFAS ==================== */
+/* Lista principal onde ficam as tarefas */
 ul {
-    list-style-type: none;
-    padding: 0;
-    margin-top: 20px;
+    list-style-type: none; /* Remove marcadores de lista (bolinhas) */
+    padding: 0; /* Remove padding padrão */
+    margin-top: 20px; /* Espaçamento de 20px acima da lista */
 }
 
+/* ==================== ITEM INDIVIDUAL DE TAREFA ==================== */
+/* Cada tarefa individual na lista */
 li {
-    background: #f9f9f9;
-    padding: 15px;
-    margin: 10px 0;
-    border-radius: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    border-left: 4px solid #4b2163;
+    background: var(--bg-tertiary); /* Fundo usando variável CSS */
+    padding: 15px; /* Espaçamento interno de 15px */
+    margin: 10px 0; /* Espaçamento de 10px acima e abaixo */
+    border-radius: 8px; /* Bordas arredondadas com raio de 8px */
+    display: flex; /* Layout flexível - conteúdo e ações ficam lado a lado */
+    justify-content: space-between; /* Conteúdo à esquerda, ações à direita */
+    align-items: flex-start; /* Alinha elementos no topo */
+    border-left: 4px solid var(--accent-color); /* Barra da cor de destaque à esquerda */
+    transition: all 0.3s ease; /* Transição suave */
+    box-shadow: 0 2px 4px var(--shadow); /* Sombra sutil */
 }
 
+/* Efeito hover nos itens de tarefa */
+li:hover {
+    transform: translateY(-2px); /* Move levemente para cima */
+    box-shadow: 0 4px 8px var(--shadow); /* Sombra mais intensa */
+}
+
+/* ==================== CONTEÚDO DA TAREFA ==================== */
+/* Container do conteúdo principal da tarefa (checkbox, texto, info) */
 .task-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
+    flex: 1; /* Ocupa todo espaço disponível (empurra botões para a direita) */
+    display: flex; /* Layout flexível */
+    flex-direction: column; /* Elementos empilhados verticalmente */
+    align-items: flex-start; /* Alinha à esquerda */
+    gap: 8px; /* Espaçamento de 8px entre elementos */
 }
 
+/* Primeira linha da tarefa (checkbox + texto) */
 .task-content > div:first-child {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
+    display: flex; /* Layout flexível horizontal */
+    align-items: center; /* Alinha verticalmente no centro */
+    gap: 10px; /* Espaçamento de 10px entre checkbox e texto */
+    width: 100%; /* Ocupa toda largura disponível */
 }
 
+/* ==================== TEXTO DA TAREFA ==================== */
+/* Texto principal da tarefa */
 .task-text {
-    font-size: 16px;
-    flex: 1;
+    font-size: 16px; /* Tamanho da fonte de 16px */
+    flex: 1; /* Ocupa todo espaço disponível na linha */
+    color: var(--text-primary); /* Cor do texto usando variável CSS */
+    transition: color 0.3s ease; /* Transição suave para cor */
 }
 
+/* Texto da tarefa quando concluída */
 .task-text.completed {
-    text-decoration: line-through;
-    color: #888;
+    text-decoration: line-through; /* Adiciona linha cortando o texto */
+    color: var(--text-muted); /* Cor cinza para indicar conclusão */
 }
 
+/* ==================== INFORMAÇÕES ADICIONAIS DA TAREFA ==================== */
+/* Container das informações extras (prioridade, categoria, data) */
 .task-info {
-    display: flex;
-    gap: 10px;
-    font-size: 12px;
-    flex-wrap: wrap;
+    display: flex; /* Layout flexível horizontal */
+    gap: 10px; /* Espaçamento de 10px entre cada informação */
+    font-size: 12px; /* Fonte pequena (12px) para informações secundárias */
+    flex-wrap: wrap; /* Permite quebra de linha se necessário */
 }
 
+/* ==================== INDICADORES DE PRIORIDADE ==================== */
+/* Badge de prioridade (geral) */
 .priority {
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-weight: bold;
-    color: white;
+    padding: 2px 8px; /* Espaçamento interno: 2px vertical, 8px horizontal */
+    border-radius: 12px; /* Bordas bem arredondadas (formato pill) */
+    font-weight: bold; /* Texto em negrito */
+    color: white; /* Texto branco para contrastar com fundo colorido */
 }
 
+/* Prioridade ALTA - cor vermelha */
 .priority-alta {
-    background-color: #ff4757;
+    background-color: #ff4757; /* Fundo vermelho */
 }
 
+/* Prioridade MÉDIA - cor laranja */
 .priority-media {
-    background-color: #ffa502;
+    background-color: #ffa502; /* Fundo laranja */
 }
 
+/* Prioridade BAIXA - cor verde */
 .priority-baixa {
-    background-color: #2ed573;
+    background-color: #2ed573; /* Fundo verde */
 }
 
+/* ==================== CATEGORIA DA TAREFA ==================== */
+/* Badge de categoria */
 .category {
-    background-color: #e9ecef;
-    padding: 2px 8px;
-    border-radius: 12px;
-    color: #495057;
-    font-weight: bold;
+    background-color: var(--border-color); /* Fundo usando variável CSS */
+    padding: 2px 8px; /* Espaçamento interno: 2px vertical, 8px horizontal */
+    border-radius: 12px; /* Bordas bem arredondadas (formato pill) */
+    color: var(--text-secondary); /* Cor do texto usando variável CSS */
+    font-weight: bold; /* Texto em negrito */
+    transition: background-color 0.3s ease; /* Transição suave */
 }
 
+/* ==================== DATA DE VENCIMENTO ==================== */
+/* Estilo para data de vencimento */
 .due-date {
-    color: #6c757d;
-    font-style: italic;
+    color: var(--text-secondary); /* Cor usando variável CSS */
+    font-style: italic; /* Texto em itálico para diferenciação */
+    transition: color 0.3s ease; /* Transição suave */
 }
 
+/* ==================== BOTÕES DE AÇÃO ==================== */
+/* Container dos botões de ação (editar, remover) */
 .actions {
-    display: flex;
-    gap: 5px;
+    display: flex; /* Layout flexível horizontal */
+    gap: 5px; /* Espaçamento de 5px entre botões */
 }
 
+/* Botões de ação individuais */
 .actions button {
-    margin: 0;
-    background-color: #dbdbdb;
-    padding: 6px 10px;
-    font-size: 12px;
+    margin: 0; /* Remove margin padrão */
+    background-color: var(--border-color); /* Fundo usando variável CSS */
+    color: var(--text-secondary); /* Cor do texto usando variável CSS */
+    padding: 6px 10px; /* Espaçamento interno: 6px vertical, 10px horizontal */
+    font-size: 12px; /* Fonte pequena (12px) */
+    border-radius: 4px; /* Bordas menos arredondadas */
+    transition: all 0.3s ease; /* Transição suave */
 }
 
+/* Efeito hover nos botões de ação */
 .actions button:hover {
-    background-color: #545b62;
+    background-color: var(--accent-color); /* Cor de destaque */
+    color: var(--bg-secondary); /* Cor do fundo secundário */
+    transform: scale(1.1); /* Aumenta levemente o tamanho */
 }
 
+/* ==================== CHECKBOX ==================== */
+/* Estilo do checkbox para marcar tarefas como concluídas */
 input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    cursor: pointer;
+    width: 18px; /* Largura de 18px */
+    height: 18px; /* Altura de 18px (formato quadrado) */
+    cursor: pointer; /* Cursor vira "mãozinha" ao passar por cima */
+    accent-color: var(--accent-color); /* Cor do checkbox quando marcado */
 }
 
-
-
-/* Responsividade */
+/* ==================== RESPONSIVIDADE ==================== */
+/* Estilos para telas pequenas (celular/tablet) - máximo 600px de largura */
 @media (max-width: 600px) {
+    /* Cabeçalho em telas pequenas */
+    .header {
+        flex-direction: column; /* Elementos empilhados verticalmente */
+        gap: 15px; /* Espaçamento entre título e botão */
+    }
+    
+    /* Formulário em telas pequenas */
     .form {
-        flex-direction: column;
+        flex-direction: column; /* Elementos empilhados verticalmente ao invés de linha */
     }
     
+    /* Campos do formulário ocupam largura total */
     .form input, .form select, .form button {
-        width: 100%;
+        width: 100%; /* Largura total da tela */
     }
     
+    /* Informações da tarefa empilhadas verticalmente */
     .task-info {
-        flex-direction: column;
-        gap: 5px;
+        flex-direction: column; /* Prioridade, categoria e data em linhas separadas */
+        gap: 5px; /* Espaçamento menor (5px) entre elementos */
     }
 
+    /* Contador responsivo */
     .counter-item{
-        flex: 1;
+        flex: 1; /* Cada item do contador ocupa espaço igual */
     }
 
+    /* Números do contador menores em telas pequenas */
     .counter-number{
-        font-size: 20px;
+        font-size: 20px; /* Reduz de 24px para 20px */
     }
 
-        .filters-container {
-        flex-direction: column;
-        gap: 15px;
+    /* Filtros empilhados verticalmente */
+    .filters-container {
+        flex-direction: column; /* Elementos empilhados verticalmente */
+        gap: 15px; /* Espaçamento maior (15px) entre elementos */
     }
     
+    /* Botões de filtro ocupam mais largura */
     .filter-btn {
-        width: 80%;
+        width: 80%; /* Largura de 80% da tela */
     }
     
+    /* Botão de tema em telas pequenas */
+    .theme-toggle {
+        width: 80%; /* Largura de 80% da tela */
+    }
 }

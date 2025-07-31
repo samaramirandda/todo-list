@@ -11,7 +11,13 @@
 
 <body>
     <div class="container">
+        <div class="header">
         <h1>📝 Task List</h1>
+        <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn">
+            🌙 Escuro
+        </button>
+    </div>
+    
         <!-- Contador de tarefas -->
         <div class="task-counter">
             <div class="counter-item">
@@ -27,7 +33,7 @@
                 <span class="counter-label">✅ Concluídas</span>
             </div>
         </div>
-        
+
         <!-- Campo de busca -->
         <div class="search-container">
             <input type="text" id="busca" placeholder="🔍 Buscar tarefas..." oninput="searchTasks()">
