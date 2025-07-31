@@ -12,6 +12,21 @@
 <body>
     <div class="container">
         <h1>📝 Task List</h1>
+        <!-- Contador de tarefas -->
+        <div class="task-counter">
+            <div class="counter-item">
+                <span class="counter-number" id="total-tasks">0</span>
+                <span class="counter-label">📋 Total</span>
+            </div>
+            <div class="counter-item">
+                <span class="counter-number" id="pending-tasks">0</span>
+                <span class="counter-label">⏳ Pendentes</span>
+            </div>
+            <div class="counter-item">
+                <span class="counter-number" id="completed-tasks">0</span>
+                <span class="counter-label">✅ Concluídas</span>
+            </div>
+        </div>
         
         <!-- Campo de busca -->
         <div class="search-container">
@@ -32,7 +47,7 @@
                 <option value="casa">🏠 Casa</option>
             </select>
         </div>
-        
+
         <!-- Formulário para adicionar tarefas -->
         <div class="form">
             <input type="text" id="tarefa" placeholder="Add a new task">

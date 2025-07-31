@@ -86,6 +86,8 @@ function renderTasks() {
         list.appendChild(li);
         // appendChild() insere o elemento <li> dentro do elemento <ul>
     });
+
+    updateTaskCounter();
 }
 
 // FUNÇÃO PARA ADICIONAR NOVA TAREFA
@@ -409,6 +411,9 @@ function renderFilteredTasks(filteredTasks) {
         // INSERÇÃO NA LISTA
         list.appendChild(li);
     });
+
+    updateTaskCounter();
+    // Atualiza contadores de tarefas na interface
 }
 
 // FUNÇÃO PARA RESETAR FILTROS
@@ -449,6 +454,62 @@ document.getElementById("tarefa").addEventListener("keypress", function(event) {
         addTask();
     }
 });
+
+// FUNÇÃO PARA ATUALIZAR CONTADOR DE TAREFAS
+// Função para calcular e exibir estatísticas das tarefas
+function updateTaskCounter() {
+    // Conta tarefas pendentes (não concluídas)
+    const totalTasks = tasks.length; // Total de tarefas
+
+    // Conta tarefas pendentes (não concluídas)
+    const pendingTasks = tasks.filter(task => {
+        const isCompleted = typeof task === 'object' ? task.completed : false;
+        return !isCompleted; // ! inverte - retorna tarefas NÃO concluídas
+    }).length; // .length conta quantos elementos há no array filtrado
+
+    // Conta tarefas concluídas
+    const completedTasks = tasks.filter(task => {
+            // Verifica se a tarefa está concluída
+        const isCompleted = typeof task === 'object' ? task.completed : false;
+        return isCompleted; // Retorna tarefas concluídas
+    }).length; // .length conta quantos elementos há no array filtrado
+
+    // ATUALIZAÇÃO DOS ELEMENTOS HTML
+    // Atualiza os contadores das tarefas na interface HTML
+    document.getElementById('total-tasks').textContent = totalTasks;
+    // .textContent define o texto do elemento HTML
+
+    // Atualiza o numero de tarefas pendentes
+    document.getElementById('pending-tasks').textContent = pendingTasks;
+
+    // Atualiza o numero de tarefas concluídas
+    document.getElementById('completed-tasks').textContent = completedTasks;
+
+    // Adiciona animação quando números mudam
+    animateCounterUpdate();
+}
+
+// FUNÇÃO PARA ANIMAÇÃO DE CONTADOR
+// Função para animar a atualização dos contadores
+function animateCounterUpdate(){
+    // SELEÇÃO DOS ELEMENTOS NÚMERO
+    // Seleciona todos os elementos com classe 'counter-number'
+    const counterNumbers = document.querySelectorAll('.counter-number');
+
+    counterNumbers.forEach(number => {
+        // Remove classe de animação se já existir
+        number.classList.remove('counter-updated');
+
+        // Adiciona classe de animação
+        number.classList.add('counter-updated');
+
+        // Remove a classe após a animação (500ms) para reiniciar a animação
+        setTimeout(() => {
+            number.classList.remove('counter-updated');
+        }, 500);
+        // setTimeout() executa função após delay especificado
+    });
+}
 
 // INICIALIZAÇÃO DA APLICAÇÃO
 // Executa a função para exibir as tarefas assim que a página carrega
