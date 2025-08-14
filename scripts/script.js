@@ -26,6 +26,10 @@ let currentCategoryFilter = 'todas';
 let currentTheme = localStorage.getItem("theme") || 'light';
 // localStorage.getItem("theme") busca o tema salvo no navegador
 
+// ==================== VARIÁVEIS DE CONTROLE DE EXPORTAÇÃO ====================
+// Controla se o menu de exportação está visível ou não
+let exportMenuVisible = false;
+
 // ==================== FUNÇÃO PARA ALTERNAR TEMA ====================
 // Função para alternar entre tema claro e escuro
 function toggleTheme() {
@@ -662,9 +666,255 @@ document.getElementById("tarefa").addEventListener("keypress", function(event) {
 
 
 
+// ==================== FUNÇÕES DE EXPORTAÇÃO ====================
+// Função para mostrar/ocultar menu de exportação
+function toggleExportMenu() {
+    // ==================== CAPTURA DO ELEMENTO DO MENU ====================
+    const exportMenu = document.getElementById("export-menu");
+    // Pega o elemento HTML do menu de exportação pelo ID
+
+    // ==================== TOGGLE VISIBILIDADE DO MENU ====================
+    exportMenuVisible = !exportMenuVisible;
+    // Inverte o estado atual (se estava visível, fica invisível e vice-versa)
+
+    if (exportMenuVisible) {
+        // Se menu deve ficar visível
+        exportMenu.classList.add('show');
+        // Adiciona classe 'show' para exibir o menu
+
+        // Atualiza o texto do botão para "Fechar"
+        document.getElementById('export-btn').textContent = '❌ Fechar';
+    } else{
+        // Se menu deve ficar invisível
+        exportMenu.classList.remove('show');
+        // Remove classe 'show' para esconder o menu
+
+        // Atualiza o texto do botão para "Exportar"
+        document.getElementById('export-btn').textContent = '📥 Exportar';
+    }
+}
+
+// ==================== FUNÇÃO PARA EXPORTAR EM TXT ====================
+// Função para exportar lista de tarefas em formato TXT
+function exportToTXT(){
+    // ==================== GERAÇÃO DO CABEÇALHO ====================
+    // Cria cabeçalho com informações gerais
+    let txtContent = "📝 LISTA DE TAREFAS\n";
+    txtContent += "=" + "=".repeat(50) + "\n\n";
+    // repeat(50) repete o caractere "=" 50 vezes para criar uma linha
+    
+    // ==================== INFORMAÇÕES ESTATÍSTICAS ====================
+    // Adiciona estatísticas das tarefas
+    const totalTasks = tasks.length;
+    const pendingTasks = tasks.filter(task => {
+        const isCompleted = typeof task === 'object' ? task.completed : false;
+        return !isCompleted; // Conta apenas tarefas NÃO concluídas
+    }).length;
+    const completedTasks = tasks.filter(tasks => {
+        const isCompleted = typeof task === 'object' ? task.completed : false;
+        return isCompleted; // Conta apenas tarefas concluídas
+    }).length;
+
+    txtContent += `📊 ESTATÍSTICAS:\n`;
+    txtContent += `   Total de tarefas: ${totalTasks}\n`;
+    txtContent += `   Pendentes: ${pendingTasks}\n`;
+    txtContent += `   Concluídas: ${completedTasks}\n\n`;
+
+    // ==================== DATA DE EXPORTAÇÃO ====================
+    // Adiciona data e hora da exportação
+    const now = new Date();
+    txtContent += `📅 Exportado em: ${now.toLocaleDateString()} às ${now.toLocaleTimeString()}\n\n`;
+
+    // ==================== LISTAGEM DAS TAREFAS ====================
+    txtContent += "🔍 TAREFAS:\n";
+    txtContent += "-" + "-".repeat(50) + "\n\n";
+
+    if (tasks.length === 0) {
+        // Se não houver tarefas, adiciona mensagem
+        txtContent += "Nenhuma tarefa encontrada.\n";
+    } else {
+        // Se houver tarefas, lista cada uma
+        tasks.forEach((task, index) => {
+            // Para cada tarefa no array
+            const taskText = typeof task === 'object' ? task.text : task;
+            const isCompleted = typeof task === 'object' ? task.completed : false;
+            const priority = typeof task === 'object' ? task.priority : 'baixa';
+            const category = typeof task === 'object' ? task.category : 'pessoal';
+            const dueDate = typeof task === 'object' ? task.dueDate : '';
+
+            // ==================== FORMATAÇÃO DE CADA TAREFA ====================
+            txtContent += `${index + 1}. ${isCompleted ? '✅' : '❌'} ${taskText}\n`;
+            // Exibe número da tarefa (index + 1), status (check ou X)
+
+            txtContent += `📂 Categoria: ${category}\n`;
+            txtContent += `🔖 Prioridade: ${priority.toUpperCase()}\n`;
+
+            if(dueDate){
+                // Se houver data de vencimento, formata e adiciona
+                txtContent += `📅 Data de Vencimento: ${new Date(dueDate).toLocaleDateString()}\n`;
+            }
+            txtContent += `📊 Status: ${isCompleted ? 'Concluída' : 'Pendente'}\n`;
+            txtContent += "\n"; // Linha em branco entre tarefas
+        });
+    }
+
+// ==================== DOWNLOAD DO ARQUIVO ====================
+// Cria elemento <a> temporário para download
+const element = document.createElement('a');
+// createElement('a') cria um link HTML temporário
+
+// Converte texto para formato arquivo
+const file = new Blob([txtContent], { type: 'text/plain' });
+// Blob() cria objeto de arquivo a partir do texto
+// Primeiro parâmetro é o conteúdo, segundo é o tipo MIME (texto simples)
+
+// Configura link para download
+element.href = URL.createObjectURL(file); // URL.createObjectURL() cria URL temporária para o arquivo Blob
+element.download = `lista-tarefas-${new Date().toISOString().split('T')[0]}.txt`;
+// Nome do arquivo com data atual
+// .toISOString() formata data em padrão ISO (YYYY-MM-DDTHH:mm:ss.sssZ)
+// .split('T')[0] pega apenas a parte da data (sem hora, antes do 'T')
+
+// ==================== EXECUÇÃO DO DOWNLOAD ====================
+document.body.appendChild(element); // Adiciona o link ao corpo do documento (necessário para download funcionar)
+element.click(); // Simula clique no link para iniciar download
+document.body.removeChild(element); // Remove o link após o download
+
+// ==================== FEEDBACK VISUAL ====================
+// Fecha menu de exportação
+toggleExportMenu();
+// Mostra mensagem de sucesso
+alert('📄 Arquivo TXT exportado com sucesso!');
+}
+
+// ==================== FUNÇÃO PARA EXPORTAR EM PDF ====================
+// Função para exportar lista de tarefas em formato PDF
+function exportToPDF() {
+    // ==================== VERIFICAÇÃO DA BIBLIOTECA ====================
+    // Verifica se biblioteca jsPDF está carregada
+    if (typeof window.jspdf === 'undefined') {
+        console.log('Biblioteca jsPDF não encontrada!'); // Debug
+        alert('❌ Erro: Biblioteca PDF não carregada. Verifique sua conexão com a internet.');
+        return; // Interrompe a função se a biblioteca não estiver disponível
+    }
+    console.log('Biblioteca jsPDF encontrada!'); // Debug
+
+    // ==================== INICIALIZAÇÃO DO PDF ====================
+    // Cria nova instância do jsPDF
+    const {jsPDF } = window.jspdf;
+    const doc = new jsPDF(); // Cria novo documento PDF
+
+    // ==================== CONFIGURAÇÕES INICIAIS ====================
+    let yPosition = 20; // Posição vertical inicial para o texto
+    const pageHeight = doc.internal.pageSize.height; // Altura da página PDF
+    const margin = 20; // Margem para evitar corte do texto
+
+    // ==================== CABEÇALHO ====================
+    // Titulo principal
+    doc.setFontSize(20); // Define tamanho da fonte
+    doc.setFont('helvetica', 'bold'); // Define fonte e estilo
+    doc.text('📝 LISTA DE TAREFAS', margin, yPosition);
+    yPosition += 15; // Move posição para baixo após o título
+
+    // Linha de separação
+    doc.setLineWidth(0.5); // Define espessura da linha
+    doc.line(margin, yPosition, 190, yPosition); // Desenha linha horizontal
+    yPosition += 15; // Move posição para baixo após a linha
+
+    // ==================== ESTATÍSTICAS ====================
+    doc.setFontSize(12); // Define tamanho da fonte para estatísticas
+    doc.setFont('helvetica', 'normal'); // Define fonte normal
+
+    // Calcula estatísticas
+    const totalTasks = tasks.length
+    const pendingTasks = tasks.filter(task => {
+        const isCompleted = typeof task === 'object' ? task.completed : false;
+        return !isCompleted; // Conta apenas tarefas NÃO concluídas
+    }).length;
+    const completedTasks = tasks.filter(task => {
+        const isCompleted = type
+    }).length; // Conta apenas tarefas concluídas
+
+    // Adiciona estatísticas ao PDF
+    doc.text(`📊 Total de tarefas: ${totalTasks}`, margin, yPosition);
+    yPosition += 8;
+    doc.text(`⏳ Pendentes: ${pendingTasks}`, margin, yPosition);
+    yPosition += 8;
+    doc.text(`✅ Concluidas: ${completedTasks}`, margin, yPosition);
+    yPosition += 15; // Espaço após estatísticas
+
+    // ==================== DATA DE EXPORTAÇÃO ====================
+    const now = new Date();
+    doc.text(`📅 Exportado em: ${now.toLocaleDateString()} às ${now.toLocaleTimeString()}`, margin, yPosition);
+    yPosition += 15; // Espaço após data
+
+    // ==================== LISTA DE TAREFAS ====================
+    if(tasks.length === 0){
+        // Se não há tarefas
+        doc.text('Nenhuma tarefa encontrada.', margin, yPosition);
+    } else {
+        // ==================== CABEÇALHO DA LISTA ====================
+        doc.setFont('helvetica', 'bold');
+        doc.text('📋 TAREFAS:', margin, yPosition);
+        yPosition += 15;
+
+        // ==================== RENDERIZAÇÃO DE CADA TAREFA ====================
+        tasks.forEach((task, index) => {
+            // ==================== VERIFICAÇÃO DE QUEBRA DE PÁGINA ====================
+            if(yPosition > pageHeight - 40){
+                // Se está próximo ao fim da página (40px de margem)
+                doc.addPage(); // Adiciona nova página
+                yPosition = 20; // Reseta posição vertical para o topo
+            }
+            // ==================== EXTRAÇÃO DE DADOS DA TAREFA ====================
+            const taskText = typeof task === 'object' ? task.text : task;
+            const isCompleted = typeof task === 'object' ? task.completed : false;
+            const priority = typeof task === 'object' ? task.priority : 'baixa';
+            const category = typeof task === 'object' ? task.category : 'pessoal';
+            const dueDate = typeof task === 'object' ? task.dueDate : '';
+
+            // ==================== FORMATAÇÃO DA TAREFA NO PDF ====================
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(11);
+
+            // Número e status da tarefa
+            const status = isCompleted ? '[✓]' : '[ ]';
+            doc.text(`${index + 1}. ${status} ${taskText}`, margin, yPosition);
+            yPosition += 8;
+
+            // Informações adicionais
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(9);
+
+            doc.text(`   📂 Categoria: ${category}`, margin, yPosition);
+            yPosition += 6;
+
+            doc.text(`   🎯 Prioridade: ${priority.toUpperCase()}`, margin, yPosition);
+            yPosition += 6;
+
+            if (dueDate) {
+                doc.text(`   📅 Vencimento: ${new Date(dueDate).toLocaleDateString()}`, margin, yPosition);
+                yPosition += 6;
+            }
+
+            doc.text(`   📊 Status: ${isCompleted ? 'Concluída' : 'Pendente'}`, margin, yPosition);
+            yPosition += 12;
+        });
+    }
 
 
+    // ==================== DOWNLOAD DO PDF ====================
+    // Salva o PDF com nome baseado na data
+    const fileName = `lista-tarefas-${new Date().toISOString().split('T')[0]}.pdf`;
+    doc.save(fileName);
+    // .save() dispara download do arquivo PDF
 
+    // ==================== FEEDBACK VISUAL ====================
+    // Fecha menu de exportação
+    toggleExportMenu();
+    // Mostra mensagem de sucesso
+    alert('📄 Arquivo PDF exportado com sucesso!');
+}
 
 
 

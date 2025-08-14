@@ -65,6 +65,12 @@ body {
     color: var(--text-primary); /* Cor do texto usando variável */
 }
 
+.header-controls{
+    display: flex; /* Layout flexível para o botão de tema */
+    gap: 10px; /* Espaçamento de 10px entre elementos */
+    align-items: center; /* Alinha verticalmente no centro */
+}
+
 /* Botão de alternância de tema */
 .theme-toggle {
     padding: 8px 16px; /* Espaçamento interno: 8px vertical, 16px horizontal */
@@ -78,11 +84,102 @@ body {
     font-weight: 500; /* Peso da fonte médio */
 }
 
+.export-toggle{
+    padding: 8px 16px; /* Espaçamento interno: 8px vertical, 16px horizontal */
+    border: 2px solid var(--accent-color); /* Borda usando cor de destaque */
+    background-color: transparent; /* Fundo transparente */
+    color: var(--accent-color); /* Cor do texto usando cor de destaque */
+    border-radius: 20px; /* Bordas bem arredondadas (formato pill) */
+    cursor: pointer; /* Cursor vira "mãozinha" ao passar por cima */
+    font-size: 14px; /* Tamanho da fonte de 14px */
+    transition: all 0.3s ease; /* Transição suave para todas as propriedades */
+    font-weight: 500; /* Peso da fonte médio */
+}
 /* Efeito hover no botão de tema */
-.theme-toggle:hover {
+.theme-toggle:hover, .export-toggle:hover {
     background-color: var(--accent-color); /* Fundo fica da cor de destaque */
     color: var(--bg-secondary); /* Texto fica da cor do fundo secundário */
     transform: scale(1.05); /* Aumenta levemente o tamanho (105%) */
+}
+
+/* ==================== MENU DE EXPORTAÇÃO ==================== */
+/* Menu de exportação (dropdown) */
+.export-menu{
+    display: none; /* Escondido por padrão */
+    background-color: var(--bg-tertiary); /* Fundo usando cor de fundo secundária */
+    border: 2px solid var(--accent-color); /* Borda usando cor de destaque */
+    border-radius: 10px; /* Bordas arredondadas com raio de 10px */
+    padding: 20px; /* Espaçamento interno de 20px */
+    margin-bottom: 20px; /* Espaçamento de 20px abaixo do menu */
+    box-shadow: 0 4px 12px var(--shadow); /* Sombra usando variável CSS */
+    animation: slideDown 0.3s ease-out; /* Animação de deslizamento para baixo */
+}
+
+/* Menu de exportação quando visível */
+.export-menu.show{
+    display: block; /* Exibe o menu */
+}
+
+/* Título do menu de exportação */
+.export-menu h3{
+    margin: 0 0 15px 0; /* Remove margin padrão e adiciona espaçamento embaixo */
+    color: var(--text-primary); /* Cor do texto usando variável CSS */
+    text-align: center; /* Centraliza o texto */
+    font-size: 18px; /* Tamanho da fonte de 18px */
+}
+
+/* Container das opções de exportação */
+.export-options{
+    display: flex; /* Layout flexível - opções lado a lado */
+    flex-direction: column; /* Empilha opções verticalmente */
+    gap: 10px; /* Espaçamento de 10px entre opções */
+}
+
+/* Botões de opção de exportação */
+.export-option-btn{
+    padding: 12px 20px; /* Espaçamento interno: 12px vertical, 20px horizontal */
+    border: 2px solid var(--accent-color); /* Borda usando cor de destaque */
+    background-color: transparent; /* Fundo transparente */
+    color: var(--accent-color); /* Cor do texto usando cor de destaque */
+    border-radius: 8px; /* Bordas arredondadas com raio de 8px */
+    cursor: pointer; /* Cursor vira "mãozinha" ao passar por cima */
+    font-size: 14px; /* Tamanho da fonte de 14px */
+    font-weight: 500; /* Peso da fonte médio */
+    transition: all 0.3s ease; /* Transição suave para todas as propriedades */
+    text-align: center; /* Centraliza o texto dentro do botão */
+}
+
+/* Efeito hover nos botões de exportação */
+.export-option-btn:hover{
+    background-color: var(--accent-color); /* Fundo fica da cor de destaque */
+    color: var(--bg-secondary); /* Texto fica da cor do fundo secundário */
+    transform: translateY(-2px); /* Move levemente para cima */
+}
+
+/* Botão de cancelar (estilo diferente) */
+.export-option-btn.cancel{
+    border-color: #dc3545; /* Borda vermelha para cancelar */
+    color: #dc3545; /* Texto vermelho */
+}
+
+/* Efeito hover no botão de cancelar */
+.export-option-btn.cancel:hover{
+    background-color: #dc3545; /* Fundo vermelho ao passar o mouse */
+    color: white; /* Texto branco ao passar o mouse */
+    transform: translateY(-2px); /* Move levemente para cima */
+}
+
+/* ==================== ANIMAÇÃO DO MENU ==================== */
+/* Animação de slide down para o menu */
+@keyframes slideDown {
+    from {
+        opacity: 0; /* Começa invisível */
+        transform: translateY(-10px); /* Começa 10px acima */
+    }
+    to {
+        opacity: 1; /* Termina visível */
+        transform: translateY(0); /* Termina na posição normal */
+    }
 }
 
 /* ==================== CAMPO DE BUSCA ==================== */
@@ -441,6 +538,12 @@ input[type="checkbox"] {
         gap: 15px; /* Espaçamento entre título e botão */
     }
     
+    .header-controls{
+        flex-direction: column; /* Botão de tema e exportação empilhados verticalmente */
+        width: 100%; /* Largura total do container */
+        gap: 10px; /* Espaçamento de 10px entre os botões */
+    }
+
     /* Formulário em telas pequenas */
     .form {
         flex-direction: column; /* Elementos empilhados verticalmente ao invés de linha */
@@ -479,7 +582,12 @@ input[type="checkbox"] {
     }
     
     /* Botão de tema em telas pequenas */
-    .theme-toggle {
+    .theme-toggle, .export-toggle {
         width: 80%; /* Largura de 80% da tela */
+    }
+
+    /* Opções de exportação em telas pequenas */
+    .export-options {
+        gap: 10px; /* Espaçamento de 10px entre opções */
     }
 }
