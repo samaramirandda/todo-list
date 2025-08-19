@@ -30,6 +30,28 @@ let currentTheme = localStorage.getItem("theme") || 'light';
 // Controla se o menu de exportação está visível ou não
 let exportMenuVisible = false;
 
+// ==================== VARIÁVEIS DE CONTROLE DE SINCRONIZAÇÃO ====================
+// Controla se o menu de sincronização está visível ou não
+let syncMenuVisible = false;
+// Status da conexão com Google Drive
+let isConnected = false;
+// Token de acesso do Google Drive
+let accessToken = null;
+// ID do arquivo no Google Drive
+let driveFileId = localStorage.getItem('driveFileId') || null;
+// Última sincronização
+let lastSyncTime = localStorage.getItem('lastSyncTime') || null;
+
+// ==================== CONFIGURAÇÕES DO GOOGLE DRIVE ====================
+// IMPORTANTE: Você precisa substituir estas configurações pelas suas próprias
+// Para obter estas informações, vá em: https://console.developers.google.com/
+const GOOGLE_CONFIG = {
+    CLIENT_ID: 'SEU_CLIENT_ID_AQUI.apps.googleusercontent.com', // Substitua pelo seu Client ID
+    API_KEY: 'SUA_API_KEY_AQUI', // Substitua pela sua API Key
+    DISCOVERY_DOC: 'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest',
+    SCOPES: 'https://www.googleapis.com/auth/drive.file' // Permissão apenas para arquivos criados pela app
+};
+
 // ==================== FUNÇÃO PARA ALTERNAR TEMA ====================
 // Função para alternar entre tema claro e escuro
 function toggleTheme() {
@@ -1001,10 +1023,366 @@ function animateCounterUpdate(){
     });
 }
 
+// ==================== FUNÇÕES DE SINCRONIZAÇÃO COM GOOGLE DRIVE ====================
+
+// ==================== FUNÇÃO PARA ALTERNAR MENU DE SINCRONIZAÇÃO ====================
+// Função para mostrar/ocultar menu de sincronização
+function toggleSyncMenu() {
+    // ==================== CAPTURA DO ELEMENTO DO MENU ====================
+    const syncMenu = document.getElementById('sync-menu');
+    // Pega o elemento do menu de sincronização pelo ID
+    
+    // ==================== ALTERNÂNCIA DA VISIBILIDADE ====================
+    syncMenuVisible = !syncMenuVisible;
+    // Inverte o estado da variável (true vira false, false vira true)
+    
+    if (syncMenuVisible) {
+        // Se menu deve ficar visível
+        syncMenu.classList.add('show');
+        // Adiciona classe 'show' que torna o menu visível via CSS
+        
+        // Atualiza texto do botão para indicar que pode fechar
+        document.getElementById('sync-btn').textContent = '❌ Fechar';
+        
+        // Atualiza status da conexão
+        updateSyncStatus();
+    } else {
+        // Se menu deve ficar oculto
+        syncMenu.classList.remove('show');
+        // Remove classe 'show' que oculta o menu via CSS
+        
+        // Volta texto original do botão
+        document.getElementById('sync-btn').textContent = '🔄 Sync';
+    }
+}
+
+// ==================== FUNÇÃO PARA ATUALIZAR STATUS DE SINCRONIZAÇÃO ====================
+// Função para atualizar indicadores visuais de conexão
+function updateSyncStatus() {
+    // ==================== CAPTURA DOS ELEMENTOS ====================
+    const statusIndicator = document.getElementById('connection-status');
+    const lastSyncElement = document.getElementById('last-sync-time');
+    const connectBtn = document.getElementById('connect-btn');
+    const syncUploadBtn = document.getElementById('sync-upload-btn');
+    const syncDownloadBtn = document.getElementById('sync-download-btn');
+    const disconnectBtn = document.getElementById('disconnect-btn');
+    
+    // ==================== ATUALIZAÇÃO BASEADA NO STATUS ====================
+    if (isConnected) {
+        // Se conectado ao Google Drive
+        statusIndicator.textContent = '🟢 Conectado ao Google Drive';
+        statusIndicator.className = 'status-indicator connected';
+        
+        // Habilita botões de sincronização
+        connectBtn.disabled = true;
+        syncUploadBtn.disabled = false;
+        syncDownloadBtn.disabled = false;
+        disconnectBtn.disabled = false;
+        
+        // Atualiza texto do botão conectar
+        connectBtn.textContent = '✅ Conectado';
+    } else {
+        // Se desconectado
+        statusIndicator.textContent = '⚪ Desconectado';
+        statusIndicator.className = 'status-indicator';
+        
+        // Desabilita botões de sincronização
+        connectBtn.disabled = false;
+        syncUploadBtn.disabled = true;
+        syncDownloadBtn.disabled = true;
+        disconnectBtn.disabled = true;
+        
+        // Atualiza texto do botão conectar
+        connectBtn.textContent = '📁 Conectar Google Drive';
+    }
+    
+    // ==================== ATUALIZAÇÃO DA ÚLTIMA SINCRONIZAÇÃO ====================
+    if (lastSyncTime) {
+        const lastSync = new Date(lastSyncTime);
+        lastSyncElement.textContent = `Última sync: ${lastSync.toLocaleDateString()} às ${lastSync.toLocaleTimeString()}`;
+    } else {
+        lastSyncElement.textContent = 'Nunca sincronizado';
+    }
+}
+
+// ==================== FUNÇÃO PARA INICIALIZAR GOOGLE DRIVE API ====================
+// Função para carregar e configurar APIs do Google
+async function initializeGoogleAPI() {
+    try {
+        // ==================== CARREGAMENTO DAS APIS ====================
+        // Carrega a API do Google
+        await new Promise((resolve, reject) => {
+            gapi.load('auth2:client', {
+                callback: resolve,
+                onerror: reject
+            });
+        });
+        
+        // ==================== INICIALIZAÇÃO DA API ====================
+        // Inicializa cliente da API
+        await gapi.client.init({
+            apiKey: GOOGLE_CONFIG.API_KEY,
+            clientId: GOOGLE_CONFIG.CLIENT_ID,
+            discoveryDocs: [GOOGLE_CONFIG.DISCOVERY_DOC],
+            scope: GOOGLE_CONFIG.SCOPES
+        });
+        
+        console.log('Google API inicializada com sucesso');
+        return true;
+    } catch (error) {
+        console.error('Erro ao inicializar Google API:', error);
+        alert('❌ Erro ao inicializar conexão com Google Drive. Verifique sua conexão com a internet.');
+        return false;
+    }
+}
+
+// ==================== FUNÇÃO PARA CONECTAR COM GOOGLE DRIVE ====================
+// Função para autenticar usuário no Google Drive
+async function connectGoogleDrive() {
+    try {
+        // ==================== VERIFICAÇÃO DAS CONFIGURAÇÕES ====================
+        if (GOOGLE_CONFIG.CLIENT_ID.includes('SEU_CLIENT_ID_AQUI')) {
+            alert('⚠️ Para usar a sincronização, você precisa configurar suas credenciais do Google Drive.\n\n' +
+                  '1. Vá em https://console.developers.google.com/\n' +
+                  '2. Crie um projeto\n' +
+                  '3. Ative a API do Google Drive\n' +
+                  '4. Crie credenciais OAuth 2.0\n' +
+                  '5. Substitua CLIENT_ID e API_KEY no código');
+            return;
+        }
+        
+        // ==================== ATUALIZAÇÃO DO STATUS ====================
+        document.getElementById('connection-status').textContent = '🟡 Conectando...';
+        document.getElementById('connection-status').className = 'status-indicator connecting';
+        
+        // ==================== INICIALIZAÇÃO DA API ====================
+        const initialized = await initializeGoogleAPI();
+        if (!initialized) return;
+        
+        // ==================== AUTENTICAÇÃO ====================
+        const authInstance = gapi.auth2.getAuthInstance();
+        
+        if (!authInstance.isSignedIn.get()) {
+            // Se usuário não está logado, solicita login
+            const user = await authInstance.signIn();
+            accessToken = user.getAuthResponse().access_token;
+        } else {
+            // Se já está logado, pega token atual
+            const user = authInstance.currentUser.get();
+            accessToken = user.getAuthResponse().access_token;
+        }
+        
+        // ==================== SUCESSO NA CONEXÃO ====================
+        isConnected = true;
+        updateSyncStatus();
+        
+        alert('✅ Conectado ao Google Drive com sucesso!');
+        
+    } catch (error) {
+        console.error('Erro na conexão:', error);
+        
+        // ==================== TRATAMENTO DE ERRO ====================
+        isConnected = false;
+        updateSyncStatus();
+        
+        document.getElementById('connection-status').textContent = '🔴 Erro na conexão';
+        document.getElementById('connection-status').className = 'status-indicator error';
+        
+        alert('❌ Erro ao conectar com Google Drive: ' + error.message);
+    }
+}
+
+// ==================== FUNÇÃO PARA SINCRONIZAR PARA A NUVEM ====================
+// Função para enviar tarefas para o Google Drive
+async function syncToCloud() {
+    if (!isConnected) {
+        alert('❌ Você precisa estar conectado ao Google Drive primeiro!');
+        return;
+    }
+    
+    try {
+        // ==================== PREPARAÇÃO DOS DADOS ====================
+        const dataToSync = {
+            tasks: tasks,
+            syncTime: new Date().toISOString(),
+            version: '1.0'
+        };
+        
+        // Converte dados para JSON
+        const jsonData = JSON.stringify(dataToSync, null, 2);
+        
+        // ==================== PREPARAÇÃO DO ARQUIVO ====================
+        const boundary = '-------314159265358979323846';
+        const delimiter = "\r\n--" + boundary + "\r\n";
+        const close_delim = "\r\n--" + boundary + "--";
+        
+        // Metadados do arquivo
+        const metadata = {
+            'name': 'todo-list-backup.json',
+            'parents': ['appDataFolder'] // Salva na pasta de dados da app (invisível ao usuário)
+        };
+        
+        // ==================== CONSTRUÇÃO DA REQUISIÇÃO ====================
+        let multipartRequestBody =
+            delimiter +
+            'Content-Type: application/json\r\n\r\n' +
+            JSON.stringify(metadata) +
+            delimiter +
+            'Content-Type: application/json\r\n\r\n' +
+            jsonData +
+            close_delim;
+        
+        // ==================== ENVIO PARA GOOGLE DRIVE ====================
+        let request;
+        if (driveFileId) {
+            // Se arquivo já existe, atualiza
+            request = gapi.client.request({
+                'path': `https://www.googleapis.com/upload/drive/v3/files/${driveFileId}`,
+                'method': 'PATCH',
+                'params': {'uploadType': 'multipart'},
+                'headers': {
+                    'Content-Type': 'multipart/related; boundary="' + boundary + '"'
+                },
+                'body': multipartRequestBody
+            });
+        } else {
+            // Se arquivo não existe, cria novo
+            request = gapi.client.request({
+                'path': 'https://www.googleapis.com/upload/drive/v3/files',
+                'method': 'POST',
+                'params': {'uploadType': 'multipart'},
+                'headers': {
+                    'Content-Type': 'multipart/related; boundary="' + boundary + '"'
+                },
+                'body': multipartRequestBody
+            });
+        }
+        
+        // ==================== PROCESSAMENTO DA RESPOSTA ====================
+        const response = await request;
+        
+        if (response.status === 200) {
+            // Sucesso
+            if (!driveFileId) {
+                driveFileId = response.result.id;
+                localStorage.setItem('driveFileId', driveFileId);
+            }
+            
+            // Atualiza timestamp da sincronização
+            lastSyncTime = new Date().toISOString();
+            localStorage.setItem('lastSyncTime', lastSyncTime);
+            updateSyncStatus();
+            
+            alert('✅ Tarefas enviadas para o Google Drive com sucesso!');
+        } else {
+            throw new Error('Falha no upload: ' + response.status);
+        }
+        
+    } catch (error) {
+        console.error('Erro no sync upload:', error);
+        alert('❌ Erro ao enviar para Google Drive: ' + error.message);
+    }
+}
+
+// ==================== FUNÇÃO PARA SINCRONIZAR DA NUVEM ====================
+// Função para baixar tarefas do Google Drive
+async function syncFromCloud() {
+    if (!isConnected) {
+        alert('❌ Você precisa estar conectado ao Google Drive primeiro!');
+        return;
+    }
+    
+    if (!driveFileId) {
+        alert('ℹ️ Nenhum backup encontrado no Google Drive. Faça upload primeiro.');
+        return;
+    }
+    
+    try {
+        // ==================== DOWNLOAD DO ARQUIVO ====================
+        const response = await gapi.client.drive.files.get({
+            fileId: driveFileId,
+            alt: 'media'
+        });
+        
+        // ==================== PROCESSAMENTO DOS DADOS ====================
+        const cloudData = JSON.parse(response.body);
+        
+        // Confirma com usuário antes de sobrescrever
+        const confirmOverwrite = confirm(
+            `📥 Backup encontrado no Google Drive:\n\n` +
+            `• Total de tarefas: ${cloudData.tasks.length}\n` +
+            `• Data do backup: ${new Date(cloudData.syncTime).toLocaleString()}\n\n` +
+            `⚠️ Isso substituirá suas tarefas atuais (${tasks.length} tarefas).\n\n` +
+            `Deseja continuar?`
+        );
+        
+        if (confirmOverwrite) {
+            // ==================== SUBSTITUIÇÃO DOS DADOS ====================
+            tasks = cloudData.tasks || [];
+            
+            // Salva no localStorage
+            saveTasks();
+            
+            // Atualiza interface
+            renderTasks();
+            
+            // Atualiza timestamp da sincronização
+            lastSyncTime = new Date().toISOString();
+            localStorage.setItem('lastSyncTime', lastSyncTime);
+            updateSyncStatus();
+            
+            alert('✅ Tarefas baixadas do Google Drive com sucesso!');
+        }
+        
+    } catch (error) {
+        console.error('Erro no sync download:', error);
+        alert('❌ Erro ao baixar do Google Drive: ' + error.message);
+    }
+}
+
+// ==================== FUNÇÃO PARA DESCONECTAR ====================
+// Função para desconectar do Google Drive
+async function disconnectCloud() {
+    try {
+        // ==================== LOGOUT DO GOOGLE ====================
+        if (gapi.auth2) {
+            const authInstance = gapi.auth2.getAuthInstance();
+            if (authInstance.isSignedIn.get()) {
+                await authInstance.signOut();
+            }
+        }
+        
+        // ==================== LIMPEZA DE DADOS ====================
+        isConnected = false;
+        accessToken = null;
+        
+        // Não remove driveFileId para poder reconectar ao mesmo arquivo
+        // driveFileId = null;
+        // localStorage.removeItem('driveFileId');
+        
+        // ==================== ATUALIZAÇÃO DA INTERFACE ====================
+        updateSyncStatus();
+        
+        alert('✅ Desconectado do Google Drive com sucesso!');
+        
+    } catch (error) {
+        console.error('Erro na desconexão:', error);
+        alert('❌ Erro ao desconectar: ' + error.message);
+    }
+}
+
 // ==================== INICIALIZAÇÃO DA APLICAÇÃO ====================
 // Inicializa tema antes de renderizar tarefas
 initializeTheme();
 // Chama função que configura o tema (claro/escuro) baseado nas preferências
+
+// Carrega informações de sincronização salvas
+if (localStorage.getItem('driveFileId')) {
+    driveFileId = localStorage.getItem('driveFileId');
+}
+if (localStorage.getItem('lastSyncTime')) {
+    lastSyncTime = localStorage.getItem('lastSyncTime');
+}
 
 // Executa a função para exibir as tarefas assim que a página carrega
 renderTasks();

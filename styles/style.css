@@ -95,8 +95,21 @@ body {
     transition: all 0.3s ease; /* Transição suave para todas as propriedades */
     font-weight: 500; /* Peso da fonte médio */
 }
+
+/* Botão de sincronização (mesmo estilo) */
+.sync-toggle {
+    padding: 8px 16px; /* Espaçamento interno: 8px vertical, 16px horizontal */
+    border: 2px solid var(--accent-color); /* Borda usando cor de destaque */
+    background-color: transparent; /* Fundo transparente */
+    color: var(--accent-color); /* Cor do texto usando cor de destaque */
+    border-radius: 20px; /* Bordas bem arredondadas (formato pill) */
+    cursor: pointer; /* Cursor vira "mãozinha" ao passar por cima */
+    font-size: 14px; /* Tamanho da fonte de 14px */
+    transition: all 0.3s ease; /* Transição suave para todas as propriedades */
+    font-weight: 500; /* Peso da fonte médio */
+}
 /* Efeito hover no botão de tema */
-.theme-toggle:hover, .export-toggle:hover {
+.theme-toggle:hover, .export-toggle:hover, .sync-toggle:hover {
     background-color: var(--accent-color); /* Fundo fica da cor de destaque */
     color: var(--bg-secondary); /* Texto fica da cor do fundo secundário */
     transform: scale(1.05); /* Aumenta levemente o tamanho (105%) */
@@ -180,6 +193,121 @@ body {
         opacity: 1; /* Termina visível */
         transform: translateY(0); /* Termina na posição normal */
     }
+}
+
+/* ==================== MENU DE SINCRONIZAÇÃO ==================== */
+/* Menu de sincronização (dropdown) */
+.sync-menu {
+    display: none; /* Escondido por padrão */
+    background-color: var(--bg-tertiary); /* Fundo usando cor de fundo secundária */
+    border: 2px solid var(--accent-color); /* Borda usando cor de destaque */
+    border-radius: 10px; /* Bordas arredondadas com raio de 10px */
+    padding: 20px; /* Espaçamento interno de 20px */
+    margin-bottom: 20px; /* Espaçamento de 20px abaixo do menu */
+    box-shadow: 0 4px 12px var(--shadow); /* Sombra usando variável CSS */
+    animation: slideDown 0.3s ease-out; /* Animação de deslizamento para baixo */
+}
+
+/* Menu de sincronização quando visível */
+.sync-menu.show {
+    display: block; /* Exibe o menu */
+}
+
+/* Título do menu de sincronização */
+.sync-menu h3 {
+    margin: 0 0 15px 0; /* Remove margin padrão e adiciona espaçamento embaixo */
+    color: var(--text-primary); /* Cor do texto usando variável CSS */
+    text-align: center; /* Centraliza o texto */
+    font-size: 18px; /* Tamanho da fonte de 18px */
+}
+
+/* Status da sincronização */
+.sync-status {
+    display: flex; /* Layout flexível */
+    flex-direction: column; /* Elementos empilhados verticalmente */
+    align-items: center; /* Centraliza elementos horizontalmente */
+    gap: 8px; /* Espaçamento de 8px entre elementos */
+    margin-bottom: 15px; /* Espaçamento de 15px embaixo */
+    padding: 10px; /* Espaçamento interno de 10px */
+    background-color: var(--bg-secondary); /* Fundo usando variável CSS */
+    border-radius: 8px; /* Bordas arredondadas */
+    border: 1px solid var(--border-color); /* Borda sutil */
+}
+
+/* Indicador de status de conexão */
+.status-indicator {
+    font-size: 14px; /* Tamanho da fonte */
+    font-weight: bold; /* Texto em negrito */
+    color: var(--text-primary); /* Cor do texto */
+}
+
+/* Hora da última sincronização */
+.last-sync {
+    font-size: 12px; /* Fonte pequena */
+    color: var(--text-secondary); /* Cor secundária */
+    font-style: italic; /* Texto em itálico */
+}
+
+/* Container das opções de sincronização */
+.sync-options {
+    display: flex; /* Layout flexível */
+    flex-direction: column; /* Empilha opções verticalmente */
+    gap: 10px; /* Espaçamento de 10px entre opções */
+}
+
+/* Botões de opção de sincronização */
+.sync-option-btn {
+    padding: 12px 20px; /* Espaçamento interno: 12px vertical, 20px horizontal */
+    border: 2px solid var(--accent-color); /* Borda usando cor de destaque */
+    background-color: transparent; /* Fundo transparente */
+    color: var(--accent-color); /* Cor do texto usando cor de destaque */
+    border-radius: 8px; /* Bordas arredondadas com raio de 8px */
+    cursor: pointer; /* Cursor vira "mãozinha" ao passar por cima */
+    font-size: 14px; /* Tamanho da fonte de 14px */
+    font-weight: 500; /* Peso da fonte médio */
+    transition: all 0.3s ease; /* Transição suave para todas as propriedades */
+    text-align: center; /* Centraliza o texto dentro do botão */
+}
+
+/* Efeito hover nos botões de sincronização */
+.sync-option-btn:hover:not(:disabled) {
+    background-color: var(--accent-color); /* Fundo fica da cor de destaque */
+    color: var(--bg-secondary); /* Texto fica da cor do fundo secundário */
+    transform: translateY(-2px); /* Move levemente para cima */
+}
+
+/* Botões desabilitados */
+.sync-option-btn:disabled {
+    opacity: 0.5; /* Transparência de 50% */
+    cursor: not-allowed; /* Cursor de não permitido */
+    border-color: var(--border-color); /* Borda cinza */
+    color: var(--text-muted); /* Texto desbotado */
+}
+
+/* Botão de cancelar sincronização */
+.sync-option-btn.cancel {
+    border-color: #dc3545; /* Borda vermelha para cancelar */
+    color: #dc3545; /* Texto vermelho */
+}
+
+/* Efeito hover no botão de cancelar */
+.sync-option-btn.cancel:hover {
+    background-color: #dc3545; /* Fundo vermelho ao passar o mouse */
+    color: white; /* Texto branco ao passar o mouse */
+    transform: translateY(-2px); /* Move levemente para cima */
+}
+
+/* Estados de conexão */
+.status-indicator.connected {
+    color: #28a745; /* Verde para conectado */
+}
+
+.status-indicator.connecting {
+    color: #ffc107; /* Amarelo para conectando */
+}
+
+.status-indicator.error {
+    color: #dc3545; /* Vermelho para erro */
 }
 
 /* ==================== CAMPO DE BUSCA ==================== */
@@ -582,12 +710,12 @@ input[type="checkbox"] {
     }
     
     /* Botão de tema em telas pequenas */
-    .theme-toggle, .export-toggle {
+    .theme-toggle, .export-toggle, .sync-toggle {
         width: 80%; /* Largura de 80% da tela */
     }
 
     /* Opções de exportação em telas pequenas */
-    .export-options {
+    .export-options, .sync-options {
         gap: 10px; /* Espaçamento de 10px entre opções */
     }
 }

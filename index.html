@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="styles/style.css">
     <!-- Biblioteca para gerar PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Google Drive API -->
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://accounts.google.com/gsi/client"></script>
 </head>
 
 <body>
@@ -19,6 +22,9 @@
             <div class="header-controls">
                 <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn">
                     🌙 Escuro
+                </button>
+                <button class="sync-toggle" onclick="toggleSyncMenu()" id="sync-btn">
+                    🔄 Sync
                 </button>
                 <button class="export-toggle" onclick="toggleExportMenu()" id="export-btn">
                     💾 Exportar
@@ -37,6 +43,32 @@
                     📝 Exportar TXT
                 </button>
                 <button class="export-option-btn cancel" onclick="toggleExportMenu()">
+                    ❌ Cancelar
+                </button>
+            </div>
+        </div>
+
+        <!-- Menu de sincronização (inicialmente oculto) -->
+        <div class="sync-menu" id="sync-menu">
+            <h3>🔄 Sincronização com Nuvem</h3>
+            <div class="sync-status" id="sync-status">
+                <span class="status-indicator" id="connection-status">⚪ Desconectado</span>
+                <span class="last-sync" id="last-sync-time">Nunca sincronizado</span>
+            </div>
+            <div class="sync-options">
+                <button class="sync-option-btn" onclick="connectGoogleDrive()" id="connect-btn">
+                    📁 Conectar Google Drive
+                </button>
+                <button class="sync-option-btn" onclick="syncToCloud()" id="sync-upload-btn" disabled>
+                    ⬆️ Enviar para Nuvem
+                </button>
+                <button class="sync-option-btn" onclick="syncFromCloud()" id="sync-download-btn" disabled>
+                    ⬇️ Baixar da Nuvem
+                </button>
+                <button class="sync-option-btn" onclick="disconnectCloud()" id="disconnect-btn" disabled>
+                    🔌 Desconectar
+                </button>
+                <button class="sync-option-btn cancel" onclick="toggleSyncMenu()">
                     ❌ Cancelar
                 </button>
             </div>

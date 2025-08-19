@@ -1,47 +1,139 @@
-# Task List Website
+# 📝 Todo List - Lista de Tarefas Moderna
 
-## Overview
-The Task List Website is a simple and user-friendly application that allows users to manage their tasks efficiently. Users can add, edit, and remove tasks, with all data being stored in the browser's local storage for persistence. This project showcases fundamental web development skills, including HTML, CSS, and JavaScript.
+Uma aplicação web completa para gerenciamento de tarefas com sincronização na nuvem, temas personalizáveis e exportação de dados.
 
-## Project Structure
+## ✨ Funcionalidades
+
+### 🎯 Funcionalidades Básicas
+- ✅ **Adicionar tarefas** com texto personalizado
+- ☑️ **Marcar como concluída** com checkbox
+- ✏️ **Editar tarefas** existentes
+- 🗑️ **Remover tarefas** indesejadas
+- 🏷️ **Categorias**: Pessoal, Trabalho, Estudos, Casa
+- ⭐ **Prioridades**: Alta, Média, Baixa (com cores visuais)
+- 📅 **Data de vencimento** para organização temporal
+
+### 🔍 Funcionalidades Intermediárias
+- 📊 **Filtros avançados**: Todas, Pendentes, Concluídas, Por categoria
+- 📈 **Contador inteligente**: Total, Pendentes, Concluídas com animações
+- 🎨 **Temas claro/escuro** com detecção automática do sistema
+- 💾 **Exportação**: PDF profissional e TXT formatado
+- 🔍 **Busca em tempo real** por texto
+
+### 🚀 Funcionalidades Avançadas
+- 🔄 **Sincronização com Google Drive** para backup na nuvem
+- 📱 **Design responsivo** otimizado para mobile
+- 💿 **Armazenamento local** (localStorage) para funcionamento offline
+- ⚡ **Interface fluida** com animações e transições suaves
+- 🎯 **Compatibilidade** com dados antigos
+
+## 🛠️ Tecnologias Utilizadas
+
+- **HTML5**: Estrutura semântica e moderna
+- **CSS3**: Variáveis CSS, Flexbox, Animações, Media Queries
+- **JavaScript ES6+**: Módulos, Arrow Functions, Template Literals
+- **Google Drive API**: Sincronização e backup na nuvem
+- **jsPDF**: Geração de PDFs no cliente
+- **localStorage**: Persistência de dados offline
+
+## 🚀 Como Usar
+
+### 1. Acesso Online
+Acesse diretamente: **[https://samaramirandda.github.io/todo-list/](https://samaramirandda.github.io/todo-list/)**
+
+### 2. Instalação Local
+
+```bash
+# Clone o repositório
+git clone https://github.com/samaramirandda/todo-list.git
+
+# Entre na pasta
+cd todo-list
+
+# Inicie um servidor local
+python3 -m http.server 8000
+
+# Acesse no navegador
+http://localhost:8000
 ```
-task-list-website
-├── index.html         # Main HTML document
-├── styles             # Directory for CSS files
-│   └── style.css      # Styles for the task list website
-├── scripts            # Directory for JavaScript files
-│   └── script.js      # Functionality for the task list
-├── assets             # Directory for assets
-│   └── favicon.ico    # Favicon for the website
-└── README.md          # Documentation for the project
+
+### 3. Uso Básico
+
+1. **Adicionar Tarefa**: Digite no campo e pressione Enter ou clique "Add"
+2. **Marcar Concluída**: Clique no checkbox ☑️
+3. **Editar**: Clique no ícone ✏️
+4. **Remover**: Clique no ícone 🗑️
+5. **Filtrar**: Use os botões ou dropdown de categoria
+6. **Buscar**: Digite no campo de busca 🔍
+
+### 4. Funcionalidades Avançadas
+
+#### 🎨 Alternar Tema
+- Clique no botão **"🌙 Escuro"** ou **"☀️ Claro"**
+- Detecção automática da preferência do sistema
+- Preferência salva para próximas visitas
+
+#### 💾 Exportar Dados
+- Clique em **"💾 Exportar"**
+- Escolha **PDF** para formato profissional
+- Escolha **TXT** para formato simples
+- Arquivos incluem estatísticas e data de exportação
+
+#### 🔄 Sincronização (Requer Configuração)
+- Clique em **"🔄 Sync"**
+- Configure Google Drive (veja instruções abaixo)
+- **"⬆️ Enviar"**: Backup para nuvem
+- **"⬇️ Baixar"**: Restaurar da nuvem
+
+## ⚙️ Configuração da Sincronização
+
+Para usar a sincronização com Google Drive, siga o guia completo:
+
+👉 **[Instruções de Configuração](GOOGLE_DRIVE_SETUP.md)**
+
+Resumo rápido:
+1. Criar projeto no Google Cloud Console
+2. Ativar Google Drive API
+3. Criar credenciais OAuth 2.0
+4. Configurar no código
+
+## 📱 Compatibilidade
+
+### Navegadores Suportados
+- ✅ Chrome 80+
+- ✅ Firefox 75+
+- ✅ Safari 13+
+- ✅ Edge 80+
+
+### Dispositivos
+- 💻 **Desktop**: Experiência completa
+- 📱 **Mobile**: Interface adaptada e responsiva
+- 📟 **Tablet**: Layout otimizado
+
+## 🗂️ Estrutura do Projeto
+
+```
+todo-list/
+├── index.html              # Página principal
+├── styles/
+│   └── style.css           # Estilos e temas
+├── scripts/
+│   └── script.js           # Lógica da aplicação
+├── assets/
+│   └── favicon.ico         # Ícone do site
+├── README.md               # Este arquivo
+└── GOOGLE_DRIVE_SETUP.md   # Guia de configuração
 ```
 
-## Features
-- Add new tasks to the list.
-- Edit existing tasks.
-- Remove tasks from the list.
-- Tasks are saved in local storage, ensuring they persist across page reloads.
+## 👨‍💻 Desenvolvido por
 
-## Setup Instructions
-1. **Clone the repository**:
-   ```
-   git clone <repository-url>
-   ```
-2. **Navigate to the project directory**:
-   ```
-   cd task-list-website
-   ```
-3. **Open `https://samaramirandda.github.io/todo-list/` in your web browser** to view the application.
+**Samara Miranda**
+- GitHub: [@samaramirandda](https://github.com/samaramirandda)
 
-## Usage
-- Type a task in the input field and click the "Adicionar" button to add it to the list.
-- Click the edit button (✏️) next to a task to modify it.
-- Click the delete button (🗑️) to remove a task from the list.
+## 📄 Licença
 
-## Technologies Used
-- HTML
-- CSS
-- JavaScript
+Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
 
-## License
-This project is open-source and available under the MIT License.
+---
+
+⭐ **Se este projeto te ajudou, deixe uma estrela no GitHub!**
